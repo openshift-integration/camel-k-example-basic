@@ -29,8 +29,8 @@ jobs:
       run: |
         kamel install
         
-        kamel run Basic.java
+        kamel run Basic.java --wait
 
         oc delete secret routing-properties || true
         oc create secret generic routing-properties --from-file routing.properties
-        kamel run Routing.java --secret routing-properties -d camel:bean
+        kamel run Routing.java --secret routing-properties -d camel:bean --wait
