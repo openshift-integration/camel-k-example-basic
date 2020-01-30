@@ -37,4 +37,7 @@ jobs:
 
     - name: Test Integrations
       run: |        
-        yaks test test/integration.feature
+        yaks test test/integration.feature | tee tests.log
+        
+        # workaround for failing when tests fail (TODO fix yaks return code)
+        tail -1 tests.log | grep Passed
