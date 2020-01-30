@@ -1,0 +1,43 @@
+name: Camel K Deploy
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+
+    steps:
+    - name: checkout
+      if: github.event.pull_request.merged
+      uses: actions/checkout@v1
+      with:
+        ref: master
+    - name: Setup Camel K Tools
+      uses: nicolaferraro/camel-k-github-action@v1.0-alpha.1
+      with:
+        cluster: none
+    - name: Connect to remote cluster
+      with:
+        OPENSHIFT_USER: ${{ secrets.OPENSHIFT_USER }}
+        OPENSHIFT_PASSWORD: ${{ secrets.OPENSHIFT_PASSWORD }}
+        OPENSHIFT_URL: ${{ secrets.OPENSHIFT_URL }}
+      env:
+        OPENSHIFT_USER: ${{ secrets.OPENSHIFT_USER }}
+        OPENSHIFT_PASSWORD: ${{ secrets.OPENSHIFT_PASSWORD }}
+        OPENSHIFT_URL: ${{ secrets.OPENSHIFT_URL }}
+      run: |
+        oc login -u ${OPENSHIFT_USER} -p ${OPENSHIFT_PASSWORD} --server=${OPENSHIFT_URL}
+        oc project camel-k-basic-staging
+    
+    - name: Deploy Integrations
+      run: |
+        kamel run Basic.java --wait
+
+        oc delete secret routing-properties || true
+        oc create secret generic routing-properties --from-file routing.properties
+        kamel run Routing.java --secret routing-properties -d camel:bean --wait
