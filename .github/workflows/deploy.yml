@@ -1,22 +1,17 @@
 name: Camel K Deploy
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
-      - master
+    - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged
 
     steps:
     - name: checkout
-      if: github.event.pull_request.merged
       uses: actions/checkout@v1
-      with:
-        ref: master
     - name: Setup Camel K Tools
       uses: nicolaferraro/camel-k-github-action@2baed3211c2ded95681d8efbcbacac9cebc43072
       with:
@@ -32,8 +27,10 @@ jobs:
     
     - name: Deploy Integrations
       run: |
-        kamel run Basic.java --wait
+        kamel install
+        
+        kamel run Basic.java
 
         oc delete secret routing-properties || true
         oc create secret generic routing-properties --from-file routing.properties
-        kamel run Routing.java --secret routing-properties -d camel:bean --wait
+        kamel run Routing.java --secret routing-properties -d camel:bean
