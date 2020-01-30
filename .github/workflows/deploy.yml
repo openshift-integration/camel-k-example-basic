@@ -18,7 +18,7 @@ jobs:
       with:
         ref: master
     - name: Setup Camel K Tools
-      uses: nicolaferraro/camel-k-github-action@master
+      uses: nicolaferraro/camel-k-github-action@58786b68b2a07048d8d98e0e9dd7061d0fc50b98
       with:
         cluster: none
     - name: Connect to remote cluster
