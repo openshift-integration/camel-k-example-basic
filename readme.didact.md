@@ -256,7 +256,7 @@ kamel log routing
 
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20log%20routing&completion=Watch%20integration%20logs. "Opens a new terminal and sends the command above"){.didact})
 
-You should see every minut a JVM starting, executing a single operation and terminating.
+You should see every minute a JVM starting, executing a single operation and terminating.
 
 The CronJob behavior is controlled via a Trait called `cron`. Traits are the main way to configure high level Camel K features, to 
 customize how integrations are rendered.
@@ -268,4 +268,5 @@ kamel run Routing.java -t cron.enabled=false
 ```
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Routing.java%20-t%20cron.enabled=false&completion=Run%20Routing.java%20integration%20without%20CronJobs. "Opens a new terminal and sends the command above"){.didact})
 
-This will disable the cron trait and restore the classic behavior.
+This will disable the cron trait and restore the classic behavior (always running pod).
+
