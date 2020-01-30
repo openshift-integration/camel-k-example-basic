@@ -1,5 +1,5 @@
 # Camel K Basic Example
-
+ 
 ![Camel K CI](https://github.com/openshift-integration/camel-k-example-basic/workflows/Camel%20K%20CI/badge.svg)
 
 This example demonstrates how to get started with Camel K by showing you some of the most important 
