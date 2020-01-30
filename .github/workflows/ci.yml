@@ -1,0 +1,40 @@
+name: Camel K CI
+
+on:
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
+
+jobs:
+  playground-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Camel K Playground
+      uses: nicolaferraro/camel-k-github-action@v1.0-alpha.1
+      with:
+        cluster: openshift
+    - name: Checkout code
+      uses: actions/checkout@v1
+    - name: Prepare Environment
+      run: |
+        kamel install
+
+        # Yaks install can be simplified with an action
+        curl --silent -L https://github.com/jboss-fuse/yaks/releases/download/0.0.1/yaks-0.0.1-linux-64bit --output yaks
+        chmod a+x yaks
+        sudo mv yaks /usr/bin/
+        yaks install
+
+    - name: Deploy Integrations
+      run: |
+        kamel run Basic.java --wait
+
+        oc create secret generic routing-properties --from-file routing.properties
+        kamel run Routing.java --secret routing-properties -d camel:bean --wait
+
+    - name: Test Integrations
+      run: |        
+        yaks test test/integration.feature

@@ -1,4 +1,8 @@
-Feature: routing integration routes items correctly
+Feature: all integrations print the correct messages
+
+  Scenario:
+    Given integration basic is running
+    Then integration basic should print Hello World
 
   Scenario:
     Given integration routing is running
