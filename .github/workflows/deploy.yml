@@ -18,14 +18,10 @@ jobs:
       with:
         ref: master
     - name: Setup Camel K Tools
-      uses: nicolaferraro/camel-k-github-action@v1.0-alpha.1
+      uses: nicolaferraro/camel-k-github-action@master
       with:
         cluster: none
     - name: Connect to remote cluster
-      with:
-        OPENSHIFT_USER: ${{ secrets.OPENSHIFT_USER }}
-        OPENSHIFT_PASSWORD: ${{ secrets.OPENSHIFT_PASSWORD }}
-        OPENSHIFT_URL: ${{ secrets.OPENSHIFT_URL }}
       env:
         OPENSHIFT_USER: ${{ secrets.OPENSHIFT_USER }}
         OPENSHIFT_PASSWORD: ${{ secrets.OPENSHIFT_PASSWORD }}
