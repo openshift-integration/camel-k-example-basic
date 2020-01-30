@@ -1,0 +1,7 @@
+/.vscode
+
+.project
+.metadata
+
+*.iml
+/.idea

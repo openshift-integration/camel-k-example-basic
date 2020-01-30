@@ -1,0 +1,17 @@
+// camel-k: language=java
+
+import org.apache.camel.builder.RouteBuilder;
+
+public class Basic extends RouteBuilder {
+  @Override
+  public void configure() throws Exception {
+
+      from("timer:java?period=1s&fixedRate=true")
+        .setHeader("example")
+          .constant("Java")
+        .setBody()
+          .simple("Ciao Mondo! Camel K route written in ${header.example}.")
+        .to("log:info");
+      
+  }
+}
