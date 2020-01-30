@@ -1,5 +1,0 @@
-kamel:
-  run:
-    integration:
-      routing:
-        secrets: '[routing-properties]'
