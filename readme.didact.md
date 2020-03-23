@@ -35,7 +35,7 @@ You can install it from the VS Code Extensions marketplace.
 
 The OpenShift CLI tool ("oc") will be used to interact with the OpenShift cluster.
 
-[Check if the OpenShift CLI ("oc") is installed](didact://?commandId=vscode.didact.requirementCheck&text=oc-requirements-status$$oc%20version$$oc&completion=OpenShift%20%20CLI%20is%20available%20on%20this%20system. "Tests to see if `oc version` returns a result"){.didact}
+[Check if the OpenShift CLI ("oc") is installed](didact://?commandId=vscode.didact.cliCommandSuccessful&text=oc-requirements-status$$oc%20version "Tests to see if `oc version` returns a 0 return code"){.didact}
 
 *Status: unknown*{#oc-requirements-status}
 
@@ -118,7 +118,8 @@ To try this feature,
 and change "Hello World" into "Ciao Mondo", then save the file.
 You should see the new integration starting up in the terminal window and replacing the old one.
 
-**To exit dev mode and terminate the execution**, click on the terminal window and press `ctrl+c`.
+[**To exit dev mode and terminate the execution**, just click here](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=camelTerm&completion=Camel%20K%20basic%20integration%20interrupted. "Interrupt the current operation on the terminal"){.didact} 
+or hit `ctrl+c` on the terminal window.
 
 > **Note:** When you terminate a "dev mode" execution, also the remote integration will be deleted. This gives the experience of a local program execution, but the integration is actually running in the remote cluster.
 
@@ -128,6 +129,7 @@ To keep the integration running and not linked to the terminal, you can run it w
 kamel run Basic.java
 ```
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Basic.java&completion=Camel%20K%20basic%20integration%20run. "Opens a new terminal and sends the command above"){.didact})
+
 
 
 After executing the command, you should be able to see it among running integrations:
@@ -154,7 +156,10 @@ kamel log basic
 
 The last parameter ("basic") is the name of the running integration for which you want to display the logs.
 
-**Click on the terminal and hit `ctrl+c` to close** the log stream.
+[**Click here to terminate the log stream**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=camelTerm&completion=Camel%20K%20basic%20integration%20interrupted. "Interrupt the current operation on the terminal"){.didact} 
+or hit `ctrl+c` on the terminal window.
+
+> **Note:** Your IDE may provide an "Apache Camel K Integrations" panel where you can see the list of running integrations and also open a window to display the logs.
 
 
 ## 2. Applying configuration and routing
@@ -173,60 +178,34 @@ To run the integration, we should link the integration to the property file prov
 
 ```
 kamel run Routing.java --property-file routing.properties --dev
-# XXX Workaround until fixed:
-# (oc delete secret routing-properties > /dev/null 2>&1 || true) && oc create secret generic routing-properties --from-file routing.properties && kamel run Routing.java --secret routing-properties --dev
 ```
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Routing.java%20--property-file%20routing.properties%20--dev&completion=Run%20Routing.java%20integration. "Opens a new terminal and sends the command above"){.didact})
 
-([^ execute working](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$(oc%20delete%20secret%20routing-properties%20>%20/dev/null%202>%261%20||%20true)%20%26%26%20oc%20create%20secret%20generic%20routing-properties%20--from-file%20routing.properties%20%26%26%20kamel%20run%20Routing.java%20--secret%20routing-properties%20--dev&completion=Run%20Routing.java%20integration. "Opens a new terminal and sends the command above"){.didact})
+Wait for the integration to be running (you should see the logs streaming in the terminal window).
 
 You can now open both the [Routing.java](didact://?commandId=vscode.openFolder&projectFilePath=Routing.java&completion=Opened%20the%20Routing.java%20file "Opens the Routing.java file"){.didact} file or
 the [routing.properties](didact://?commandId=vscode.openFolder&projectFilePath=routing.properties&completion=Opened%20the%20routing.properties%20file "Opens the routing.properties file"){.didact}
 file, make some changes and see the integration redeployed.
 For example, change the word `door` with `*door` to see it sent to the priority queue.
 
-**Click on the terminal window and hit `ctrl+c` to terminate** the integration and exit the "dev mode".
+[**Click here to exit dev mode and terminate the execution**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=camelTerm&completion=Camel%20K%20basic%20integration%20interrupted. "Interrupt the current operation on the terminal"){.didact}, 
+or hit `ctrl+c` on the terminal window.
 
-When you need to pass multiple arguments to `kamel run`, it's often desirable to save them and avoid repeating them each time.
-Let's re-execute the previous command in standard mode with the `--save` option:
-
-```
-kamel run Routing.java --property-file routing.properties --save
-# XXX Workaround until fixed:
-# kamel run Routing.java --secret routing-properties --save
-```
-
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Routing.java%20--property-file%20routing.properties%20--save&completion=Run%20Routing.java%20integration%20and%20save%20configuration. "Opens a new terminal and sends the command above"){.didact})
-
-([^ execute working](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Routing.java%20--secret%20routing-properties%20--save&completion=Run%20Routing.java%20integration%20and%20save%20configuration. "Opens a new terminal and sends the command above"){.didact})
-
-The previous command will run the integration on the remote cluster, but also save a file with the command line options used for
-the integration. You can inspect the file by opening it: [kamel-config.yaml](didact://?commandId=vscode.openFolder&projectFilePath=kamel-config.yaml&completion=Opened%20the%20kamel%20configuration%20file "Opens the kamel-config.yaml file"){.didact}.
-
-Note that the command line options have been saved into the file. From next time, you can run the integration with the simpler command `kamel run Routing.java`, the configuration file will be linked automatically.
-
-You can delete the integration as you'd do with any Kubernetes resource:
-
-```
-oc delete integration routing
-```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20delete%20integration%20routing%20&completion=Deleted%20integration%20routing. "Opens a new terminal and sends the command above"){.didact})
+This will also terminate the execution of the integration.
 
 ## 3. Running integrations as Kubernetes CronJobs
 
 The previous example can be automatically deployed as a Kubernetes CronJob if the delay between executions is changed into a value that can be expressed by a cron tab expression.
 
-For example, you can change the first endpoint (`timer:java?period=3s`) into the following: `timer:java?period=1m` (1 minute between executions). [Open the Routing.java file](didact://?commandId=vscode.openFolder&projectFilePath=Routing.java&completion=Opened%20the%20Routing.java%20file "Opens the Routing.java file"){.didact} to apply the changes.
+For example, you can change the first endpoint (`timer:java?period=3000`) into the following: `timer:java?period=60000` (1 minute between executions). [Open the Routing.java file](didact://?commandId=vscode.openFolder&projectFilePath=Routing.java&completion=Opened%20the%20Routing.java%20file "Opens the Routing.java file"){.didact} to apply the changes.
 
 Now you can run the integration again:
 
 ```
-kamel run Routing.java
+kamel run Routing.java --property-file routing.properties
 ```
 
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Routing.java&completion=Run%20Routing.java%20integration. "Opens a new terminal and sends the command above"){.didact})
-
-If you have used `--save` in the previous step, the CLI will automatically link the property file.
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Routing.java%20--property-file%20routing.properties&completion=Run%20Routing.java%20integration%20as%20CronJob. "Opens a new terminal and sends the command above"){.didact})
 
 Now you'll see that Camel K has materialized a cron job:
 
@@ -248,7 +227,8 @@ oc get pod -w
 
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20get%20pod%20-w&completion=Watch%20Pods. "Opens a new terminal and sends the command above"){.didact})
 
-Click on the terminal window and **hit `ctrl+c` to exit the current command**.
+[**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=camelTerm&completion=Camel%20K%20basic%20integration%20interrupted. "Interrupt the current operation on the terminal"){.didact},
+or hit `ctrl+c` on the terminal window.
 
 To see the logs of each integration starting up, you can use the `kamel log` command:
 
@@ -260,15 +240,31 @@ kamel log routing
 
 You should see every minute a JVM starting, executing a single operation and terminating.
 
+[**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=camelTerm&completion=Camel%20K%20basic%20integration%20interrupted. "Interrupt the current operation on the terminal"){.didact},
+or hit `ctrl+c` on the terminal window.
+
 The CronJob behavior is controlled via a Trait called `cron`. Traits are the main way to configure high level Camel K features, to 
 customize how integrations are rendered.
 
 To disable the cron feature and use the deployment strategy, you can run the integration with:
 
 ```
-kamel run Routing.java -t cron.enabled=false
+kamel run Routing.java --property-file routing.properties -t cron.enabled=false
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Routing.java%20-t%20cron.enabled=false&completion=Run%20Routing.java%20integration%20without%20CronJobs. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20run%20Routing.java%20--property-file%20routing.properties%20-t%20cron.enabled=false&completion=Run%20Routing.java%20integration%20without%20CronJobs. "Opens a new terminal and sends the command above"){.didact})
 
 This will disable the cron trait and restore the classic behavior (always running pod).
 
+You should see it reflected in the logs (which will be printed every minute by the same JVM):
+
+```
+kamel log routing
+```
+
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20log%20routing&completion=Watch%20integration%20logs. "Opens a new terminal and sends the command above"){.didact})
+
+
+[**Click here to exit the current command**](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=camelTerm&completion=Camel%20K%20basic%20integration%20interrupted. "Interrupt the current operation on the terminal"){.didact},
+or hit `ctrl+c` on the terminal window.
+
+You can continue to hack on the examples.
