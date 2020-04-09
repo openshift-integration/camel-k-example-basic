@@ -12,24 +12,29 @@ Make sure you check-out this repository from git and open it with [VSCode](https
 Instructions are based on [VSCode Didact](https://github.com/redhat-developer/vscode-didact), so make sure it's installed
 from the VSCode extensions marketplace.
 
-From the VSCode UI, click on the `readme.didact.md` file and select "Didact: Start Didact tutorial from File". A new Didact tab will be opened in VS Code.
+From the VSCode UI, right-click on the `readme.didact.md` file and select "Didact: Start Didact tutorial from File". A new Didact tab will be opened in VS Code.
 
-[Make sure you've checked all the requirements](./requirements.didact.md) before jumping into the tutorial section.
+Make sure you've opened this readme file with Didact before jumping to the next section.
+
+## Preparing the cluster
+
+This example can be run on any OpenShift 4.3+ cluster or a local development instance (such as [CRC](https://github.com/code-ready/crc)). Ensure that you have a cluster available and login to it using the OpenShift `oc` command line tool.
+
+You need to create a new project named `camel-basic` for running this example. This can be done directly from the OpenShift web console or by executing the command `oc new-project camel-basic` on a terminal window.
+
+You need to install the Camel K operator in the `camel-basic` project. To do so, go to the OpenShift 4.x web console, use the OperatorHub menu item on the left and find and install **"Red Hat Integration - Camel K"**. You will be given the option to install it globally on the cluster or on a specific namespace.
+If using a specific namespace, make sure you select the `camel-basic` project from the dropdown list.
+This completes the installation of the Camel K operator (it may take a couple of minutes).
+
+When the operator is installed, from the OpenShift Help menu ("?") at the top of the WebConsole, you can access the "Command Line Tools" page, where you can download the **"kamel"** CLI, that is required for running this example. The CLI must be installed in your system path.
+
+Refer to the **"Red Hat Integration - Camel K"** documentation for a more detailed explanation of the installation steps for the operator and the CLI.
+
+You can use the following section to check if your environment is configured properly.
 
 ## Checking requirements
 
 <a href='didact://?commandId=vscode.didact.validateAllRequirements' title='Validate all requirements!'><button>Validate all Requirements at Once!</button></a>
-
-**VS Code Extension Pack for Apache Camel**
-
-The VS Code Extension Pack for Apache Camel by Red Hat provides a collection of useful tools for Apache Camel K developers,
-such as code completion and integrated lifecycle management.
-
-You can install it from the VS Code Extensions marketplace.
-
-[Check if the VS Code Extension Pack for Apache Camel by Red Hat is installed](didact://?commandId=vscode.didact.extensionRequirementCheck&text=extension-requirement-status$$redhat.apache-camel-extension-pack&completion=Camel%20extension%20pack%20is%20available%20on%20this%20system. "Checks the VS Code workspace to make sure the extension pack is installed"){.didact}
-
-*Status: unknown*{#extension-requirement-status}
 
 **OpenShift CLI ("oc")**
 
@@ -57,37 +62,50 @@ access all Camel K features.
 
 *Status: unknown*{#kamel-requirements-status}
 
+### Optional Requirements
 
-## 1. Preparing a new OpenShift project
+The following requirements are optional. They don't prevent the execution of the demo, but may make it easier to follow.
 
-We'll setup a new project called `camel-basic` where we'll run the integrations.
+**VS Code Extension Pack for Apache Camel**
 
-To create the project, open a terminal tab and type the following command:
+The VS Code Extension Pack for Apache Camel by Red Hat provides a collection of useful tools for Apache Camel K developers,
+such as code completion and integrated lifecycle management. They are **recommended** for the tutorial, but they are **not**
+required.
+
+You can install it from the VS Code Extensions marketplace.
+
+[Check if the VS Code Extension Pack for Apache Camel by Red Hat is installed](didact://?commandId=vscode.didact.extensionRequirementCheck&text=extension-requirement-status$$redhat.apache-camel-extension-pack&completion=Camel%20extension%20pack%20is%20available%20on%20this%20system. "Checks the VS Code workspace to make sure the extension pack is installed"){.didact}
+
+*Status: unknown*{#extension-requirement-status}
+
+
+## 1. Preparing the project
+
+We'll connect to the `camel-basic` project and check the installation status.
+
+To change project, open a terminal tab and type the following command:
 
 
 ```
-oc new-project camel-basic
+oc project camel-basic
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20new-project%20camel-basic&completion=New%20project%20creation. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20project%20camel-basic&completion=New%20project%20creation. "Opens a new terminal and sends the command above"){.didact})
+
+
+We should now check that the operator is installed. To do so, execute the following command on a terminal:
 
 
 Upon successful creation, you should ensure that the Camel K operator is installed. We'll use the `kamel` CLI to do it:
 
 ```
-kamel install
+oc get csv
 ```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20install&completion=Camel%20K%20operator%20installation. "Opens a new terminal and sends the command above"){.didact})
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20get%20csv&completion=Checking%20Cluster%20Service%20Versions. "Opens a new terminal and sends the command above"){.didact})
 
 
-Camel K should have created an IntegrationPlatform custom resource in your project. To verify it:
+When Camel K is installed, you should find an entry related to `red-hat-camel-k-operator` in phase `Succeeded`.
 
-```
-oc get integrationplatform
-```
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20get%20integrationplatform&completion=Camel%20K%20integration%20platform%20verification. "Opens a new terminal and sends the command above"){.didact})
-
-If everything is ok, you should see an IntegrationPlatform named `camel-k` with phase `Ready`.
-
+You can now proceed to the next section.
 
 ## 2. Running a basic integration
 
