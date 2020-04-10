@@ -22,7 +22,7 @@ This example can be run on any OpenShift 4.3+ cluster or a local development ins
 
 You need to create a new project named `camel-basic` for running this example. This can be done directly from the OpenShift web console or by executing the command `oc new-project camel-basic` on a terminal window.
 
-You need to install the Camel K operator in the `camel-basic` project. To do so, go to the OpenShift 4.x web console, use the OperatorHub menu item on the left and find and install **"Red Hat Integration - Camel K"**. You will be given the option to install it globally on the cluster or on a specific namespace.
+You need to install the Camel K operator in the `camel-basic` project. To do so, go to the OpenShift 4.x web console, login with a cluster admin account and use the OperatorHub menu item on the left to find and install **"Red Hat Integration - Camel K"**. You will be given the option to install it globally on the cluster or on a specific namespace.
 If using a specific namespace, make sure you select the `camel-basic` project from the dropdown list.
 This completes the installation of the Camel K operator (it may take a couple of minutes).
 
@@ -95,7 +95,7 @@ oc project camel-basic
 We should now check that the operator is installed. To do so, execute the following command on a terminal:
 
 
-Upon successful creation, you should ensure that the Camel K operator is installed. We'll use the `kamel` CLI to do it:
+Upon successful creation, you should ensure that the Camel K operator is installed:
 
 ```
 oc get csv
