@@ -6,7 +6,7 @@ public class Basic extends RouteBuilder {
   @Override
   public void configure() throws Exception {
 
-      from("timer:java?period=1000&fixedRate=true")
+      from("timer:java?period=1000")
         .setHeader("example")
           .constant("Java")
         .setBody()
