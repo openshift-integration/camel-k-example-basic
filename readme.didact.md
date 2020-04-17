@@ -286,3 +286,11 @@ kamel log routing
 or hit `ctrl+c` on the terminal window.
 
 You can continue to hack on the examples.
+
+## 4. Uninstall
+
+To cleanup everything, execute the following command:
+
+```oc delete project camel-basic```
+
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20delete%20project%20camel-basic&completion=Removed%20the%20project%20from%20the%20cluster. "Cleans up the cluster after running the example"){.didact})
