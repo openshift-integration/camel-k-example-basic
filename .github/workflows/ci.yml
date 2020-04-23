@@ -105,6 +105,12 @@ jobs:
     - name: Info
       run: |
         oc describe nodes
+    - name: Prepare IT
+      run: |
+        # Installing Camel K cluster resources
+        kamel install --cluster-setup
+        # Installing YAKS cluster resources
+        yaks install --cluster-setup
     - name: Run IT
       run: |
         # Make the Apache Snapshots repository enabled by efault
