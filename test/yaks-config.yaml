@@ -1,0 +1,7 @@
+config:
+  namespace:
+    temporary: true
+pre:
+   - run: kamel install -w -n ${YAKS_NAMESPACE}
+   - run: kamel run ../Basic.java -n ${YAKS_NAMESPACE}
+   - run: kamel run ../Routing.java --property-file ../routing.properties -t cron.enabled=false -n ${YAKS_NAMESPACE}
