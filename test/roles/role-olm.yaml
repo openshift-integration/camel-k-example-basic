@@ -1,0 +1,15 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: yaks-operator-foo
+  labels:
+    app: "yaks"
+    yaks.citrusframework.org/append-to-viewer: "true"
+rules:
+- apiGroups:
+    - operators.coreos.com
+  resources:
+    - operatorgroups
+    - subscriptions
+  verbs:
+    - '*'

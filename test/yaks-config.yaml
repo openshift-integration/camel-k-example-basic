@@ -1,9 +1,12 @@
 config:
+  runtime:
+    resources:
+      - resources/camel-k-subscription.yaml
+      - resources/operatorgroup.yaml
   namespace:
     temporary: true
 pre:
 - name: integrations
   run: |
-    kamel install -w -n ${YAKS_NAMESPACE}
     kamel run ../Basic.java -n ${YAKS_NAMESPACE}
     kamel run ../Routing.java --property-file ../routing.properties -t cron.enabled=false -n ${YAKS_NAMESPACE}
