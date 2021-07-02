@@ -113,7 +113,7 @@ jobs:
         yaks install --cluster-setup
     - name: Run IT
       run: |
-        # Make the Apache Snapshots repository enabled by efault
+        # Make the Apache Snapshots repository enabled by default
         export KAMEL_INSTALL_MAVEN_REPOSITORIES=https://repository.apache.org/content/repositories/snapshots@id=apache-snapshots@snapshots
 
         # Run integration tests
