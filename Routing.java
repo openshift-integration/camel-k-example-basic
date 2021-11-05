@@ -7,7 +7,7 @@ import org.apache.camel.builder.RouteBuilder;
 
 public class Routing extends RouteBuilder {
 
-  private Random random = new Random();
+  private final Random random = new Random();
 
   @PropertyInject("priority-marker")
   private String priorityMarker;
@@ -24,7 +24,7 @@ public class Routing extends RouteBuilder {
             .to("direct:priorityQueue")
           .otherwise()
             .to("direct:standardQueue");
-      
+
       from("direct:standardQueue")
         .id("standard")
         .log("Standard item: ${body}");
@@ -32,7 +32,7 @@ public class Routing extends RouteBuilder {
       from("direct:priorityQueue")
         .id("priority")
         .log("!!Priority item: ${body}");
-      
+
   }
 
   public String generateRandomItem(String items) {
