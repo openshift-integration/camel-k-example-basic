@@ -15,27 +15,21 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-name: Kubernetes
+name: Nightly
 
 on:
-  pull_request:
-    branches:
-      - main
-      - 1.6.x
-      - 1.8.x
-      - 1.10.x
-  push:
-    branches:
-      - main
-      - 1.6.x
-      - 1.8.x
-      - 1.10.x
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 1"
 
 jobs:
-  test:
+  preview:
+    strategy:
+      matrix:
+        version:
+          - 2.1.0-nightly
     runs-on: ubuntu-latest
     env:
-      CAMEL_K_VERSION: latest
       YAKS_VERSION: 0.15.1
       YAKS_IMAGE_NAME: "docker.io/citrusframework/yaks"
       YAKS_RUN_OPTIONS: "--timeout=15m"
@@ -79,7 +73,86 @@ jobs:
       - name: Camel K Tools
         uses: container-tools/camel-k-action@v1.0.3
         with:
-          version: ${{ env.CAMEL_K_VERSION }}
+          version: ${{ matrix.version }}
+      - name: Install Camel K
+        run: |
+          # Configure install options
+          export KAMEL_INSTALL_BUILD_PUBLISH_STRATEGY=Spectrum
+          export KAMEL_INSTALL_REGISTRY=$KIND_REGISTRY
+          export KAMEL_INSTALL_REGISTRY_INSECURE=true
+
+          kamel install --maven-repository=https://repository.apache.org/content/repositories/snapshots@id=apache-snapshots@snapshots
+      - name: YAKS tools
+        uses: citrusframework/yaks-install-action@v1.1
+        with:
+          version: v${{ env.YAKS_VERSION }}
+      - name: Install YAKS
+        run: |
+          yaks install --operator-image $YAKS_IMAGE_NAME:$YAKS_VERSION
+      - name: YAKS Tests
+        run: |
+          # Then run integration tests
+          yaks run test/integration.feature $YAKS_RUN_OPTIONS
+      - name: YAKS Report
+        if: failure()
+        run: |
+          yaks report
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: dumps
+          path: _output/*-dump.log
+  test:
+    strategy:
+      matrix:
+        version:
+          - latest
+    runs-on: ubuntu-latest
+    env:
+      YAKS_VERSION: 0.15.1
+      YAKS_IMAGE_NAME: "docker.io/citrusframework/yaks"
+      YAKS_RUN_OPTIONS: "--timeout=15m"
+      KUBECTL_WAIT_TIMEOUT: "180s"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Cleanup
+        run: |
+          ls -lart
+          echo "Initial status:"
+          df -h
+
+          echo "Cleaning up resources:"
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          docker rmi $(docker image ls -aq)
+
+          echo "Final status:"
+          df -h
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Kind Cluster
+        uses: container-tools/kind-action@v1
+        with:
+          version: v0.14.0
+          node_image: kindest/node:v1.23.6@sha256:b1fa224cc6c7ff32455e0b1fd9cbfd3d3bc87ecaa8fcb06961ed1afb3db0f9ae
+      - name: Info
+        run: |
+          kubectl version
+          kubectl cluster-info
+          kubectl describe nodes
+      - name: Camel K Tools
+        uses: container-tools/camel-k-action@v1.0.3
+        with:
+          version: ${{ matrix.version }}
       - name: Install Camel K
         run: |
           # Configure install options
